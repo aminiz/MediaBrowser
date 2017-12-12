@@ -478,7 +478,7 @@ public class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheet
                     
                     self.navigationItem.rightBarButtonItem = done
                 }
-            } else {
+            } else if navi.viewControllers.count > 1 {
                 // We're not first so show back button
                 if let navi = navigationController, let previousViewController = navi.viewControllers[navi.viewControllers.count - 2] as? UINavigationController {
                     let backButtonTitle = previousViewController.navigationItem.backBarButtonItem != nil ?

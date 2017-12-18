@@ -1834,9 +1834,6 @@ public class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheet
         // Animations & positions
         let animatonOffset = CGFloat(20)
         let animationDuration = CFTimeInterval(animated ? 0.35 : 0.0)
-
-        // Navigation bar
-        self.navigationController?.setNavigationBarHidden(hidden, animated: true)
         
         // Status bar
         if !leaveStatusBarAlone {

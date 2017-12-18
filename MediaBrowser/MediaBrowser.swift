@@ -583,8 +583,6 @@ public class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheet
             previousStatusBarStyle = UIApplication.shared.statusBarStyle
             UIApplication.shared.setStatusBarStyle(statusBarStyle, animated: animated)
         }
-
-        setNavBarAppearance(animated: animated)
         
         // Update UI
         if hideControlsOnStartup {
@@ -701,21 +699,6 @@ public class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheet
             hasBelongedToViewController = true
         }
 
-    }
-
-    //MARK: - Nav Bar Appearance
-    func setNavBarAppearance(animated: Bool) {
-        navigationController?.setNavigationBarHidden(false, animated: animated)
-    
-        if let navBar = navigationController?.navigationBar {
-            navBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor:navigationBarTextColor]
-            navBar.backgroundColor = navigationBarBackgroundColor
-            navBar.tintColor = navigationBarTextColor
-            navBar.barTintColor = navigationBarTintColor
-            navBar.shadowImage = nil
-            navBar.isTranslucent = navigationBarTranslucent
-            navBar.barStyle = .black
-        }
     }
 
     //MARK: - Layout

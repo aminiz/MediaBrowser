@@ -54,7 +54,6 @@ public class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheet
     // Appearance
     private var previousNavigationBarHidden = false
     private var previousNavigationBarTranslucent = false
-    private var previousNavigationBarStyle = UIBarStyle.default
     private var previousNavigationBarTextColor: UIColor?
     private var previousNavigationBarBackgroundColor: UIColor?
     private var previousNavigationBarTintColor: UIColor?
@@ -578,12 +577,7 @@ public class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheet
                 leaveStatusBarAlone = true
             }
         }
-        
-        // Navigation bar appearance
-        if !viewIsActive && navigationController?.viewControllers[0] as? MediaBrowser !== self {
-            storePreviousNavBarAppearance()
-        }
-        
+
         // Set style
         if !leaveStatusBarAlone && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.phone {
             previousStatusBarStyle = UIApplication.shared.statusBarStyle
@@ -659,7 +653,6 @@ public class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheet
                 viewIsActive = false
                 
                 // Bar state / appearance
-                restorePreviousNavBarAppearance(animated: animated)
             }
         }
         
@@ -722,41 +715,6 @@ public class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheet
             navBar.shadowImage = nil
             navBar.isTranslucent = navigationBarTranslucent
             navBar.barStyle = .black
-        }
-    }
-
-    func storePreviousNavBarAppearance() {
-        didSavePreviousStateOfNavBar = true
-        
-        if let navi = navigationController {
-            previousNavigationBarTintColor = navi.navigationBar.barTintColor
-            previousNavigationBarBackgroundColor = navi.navigationBar.backgroundColor
-            previousNavigationBarTranslucent = navi.navigationBar.isTranslucent
-            previousNavigationBarTextColor = navi.navigationBar.tintColor
-            previousNavigationBarHidden = navi.isNavigationBarHidden
-            previousNavigationBarStyle = navi.navigationBar.barStyle
-        }
-    }
-
-    func restorePreviousNavBarAppearance(animated: Bool) {
-        if let navi = navigationController, didSavePreviousStateOfNavBar {
-            navi.setNavigationBarHidden(previousNavigationBarHidden, animated: animated)
-            
-            let navBar = navi.navigationBar
-            navBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor:previousNavigationBarTextColor ?? UIColor.black]
-            navBar.backgroundColor = previousNavigationBarBackgroundColor
-            navBar.tintColor = previousNavigationBarTextColor
-            navBar.isTranslucent = previousNavigationBarTranslucent
-            navBar.barTintColor = previousNavigationBarTintColor
-            navBar.barStyle = previousNavigationBarStyle
-
-            // Restore back button if we need to
-            if previousViewControllerBackButton != nil {
-                if let previousViewController = navi.topViewController { // We've disappeared so previous is falsew top
-                    previousViewController.navigationItem.backBarButtonItem = previousViewControllerBackButton
-                }
-                previousViewControllerBackButton = nil
-            }
         }
     }
 

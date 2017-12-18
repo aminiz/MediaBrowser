@@ -1948,7 +1948,7 @@ public class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheet
     }
 
     var areControlsHidden: Bool {
-        reteurn true
+        return true
     }
     
     var isToolBarHidden = false

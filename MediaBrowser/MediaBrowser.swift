@@ -38,8 +38,9 @@ public class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheet
 	private var pageIndexBeforeRotation = 0
 	
 	// Navigation & controls
-	private var toolbar = UIToolbar()
-	private var controlVisibilityTimer: Timer?
+	//private var toolbar = UIToolbar()
+	
+    private var controlVisibilityTimer: Timer?
 	private var previousButton: UIBarButtonItem?
     private var nextButton: UIBarButtonItem?
     private var actionButton: UIBarButtonItem?
@@ -359,17 +360,6 @@ public class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheet
         pagingScrollView.contentSize = contentSizeForPagingScrollView()
         view.addSubview(pagingScrollView)
         
-        // Toolbar
-        toolbar = UIToolbar(frame: frameForToolbar)
-        toolbar.tintColor = toolbarTextColor
-        toolbar.barTintColor = toolbarBarTintColor
-        toolbar.backgroundColor = toolbarBackgroundColor
-        toolbar.alpha = toolbarAlpha
-        toolbar.setBackgroundImage(UIImage(), forToolbarPosition: .any, barMetrics: .default)
-        toolbar.setBackgroundImage(UIImage(), forToolbarPosition: .any, barMetrics: .compact)
-        toolbar.barStyle = .default
-        toolbar.autoresizingMask = [.flexibleTopMargin, .flexibleWidth]
-        
         // Toolbar Items
         if displayMediaNavigationArrows {
             let arrowPathFormat = "UIBarButtonItemArrow"
@@ -432,8 +422,7 @@ public class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheet
         }
 
         coordinator.animate(alongsideTransition: { (context) in
-            self.toolbar.frame = self.frameForToolbar
-
+        
             // Perform layout
             self.currentPageIndex = self.pageIndexBeforeRotation
 
@@ -542,24 +531,7 @@ public class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheet
             }
             items.append(fixedSpace)
         }
-
-        // Toolbar visibility
-        toolbar.setItems(items, animated: false)
-        var hideToolbar = true
-        
-        for item in items {
-            if item != fixedSpace && item != flexSpace {
-                hideToolbar = false
-                break
-            }
-        }
-        
-        if hideToolbar {
-            toolbar.removeFromSuperview()
-        } else {
-            view.addSubview(toolbar)
-        }
-        
+    
         // Update nav
         updateNavigation()
         
@@ -798,9 +770,6 @@ public class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheet
     func layoutVisiblePages() {
         // Flag
         performingLayout = true
-        
-        // Toolbar
-        toolbar.frame = frameForToolbar
         
         // Remember index
         let indexPriorToLayout = currentPageIndex
@@ -1423,7 +1392,7 @@ public class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheet
             let captionSize = cw.sizeThatFits(CGSize(width: pageFrame.size.width, height: 0.0))
             let captionFrame = CGRect(
                 x: pageFrame.origin.x,
-                y: pageFrame.size.height - captionSize.height - (toolbar.superview != nil ? toolbar.frame.size.height : 0.0),
+                y: pageFrame.size.height - captionSize.height,
                 width: pageFrame.size.width,
                 height: captionSize.height)
             
@@ -1891,8 +1860,6 @@ public class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheet
         // Toolbar, nav bar and captions
         // Pre-appear animation positions for sliding
         if areControlsHidden && !hidden && animated {
-            // Toolbar
-            toolbar.frame = frameForToolbar.offsetBy(dx: 0, dy: animatonOffset)
             
             // Captions
             for page in visiblePages {
@@ -1906,14 +1873,6 @@ public class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheet
         }
 
         UIView.animate(withDuration: animationDuration, animations: {
-
-            // Toolbar
-            self.toolbar.frame = self.frameForToolbar
-            
-            if hidden {
-                self.toolbar.frame = self.toolbar.frame.offsetBy(dx: 0, dy: animatonOffset)
-            }
-            self.toolbar.alpha = hidden ? 0.0 : self.toolbarAlpha
 
             // Captions
             for page in self.visiblePages {
@@ -1989,8 +1948,10 @@ public class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheet
     }
 
     var areControlsHidden: Bool {
-        return 0.0 == toolbar.alpha
+        return navigationController?.isNavigationBarHidden ?? false
     }
+    
+    var isToolBarHidden = false
     
     @objc func hideControls() {
         setControlsHidden(hidden: true, animated: true, permanent: false)
